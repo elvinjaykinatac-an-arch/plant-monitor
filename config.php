@@ -16,6 +16,8 @@ function getDB() {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]
         );
+        // Set timezone to Philippine Standard Time (UTC+8)
+        $pdo->exec("SET time_zone = '+08:00'");
         return $pdo;
     } catch (PDOException $e) {
         die(json_encode(['error' => 'DB failed: ' . $e->getMessage()]));
