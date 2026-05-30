@@ -1,61 +1,48 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
-require 'Exception.php';
-require 'PHPMailer.php';
-require 'SMTP.php';
-
 function sendEmailAlert($pumpStatus, $moisturePercent, $timestamp) {
-    $recipientEmail = getenv('ALERT_EMAIL') ?: 'your@gmail.com';
-    $senderEmail    = getenv('GMAIL_USER') ?: 'your@gmail.com';
-    $senderPassword = getenv('GMAIL_APP_PASSWORD') ?: '';
-
-    $soilStatus        = $pumpStatus === 'ON' ? 'Dry' : 'Wet';
-    $moistureFormatted = number_format($moisturePercent, 1);
+    $recipientEmail = getenv('ALERT_EMAIL') ?: 'elvinjaykinatacan99@gmail.com';
+    $senderEmail    = getenv('GMAIL_USER') ?: 'elvinjaykinatacan99@gmail.com';
+    $apiKey         = getenv('BREVO_API_KEY') ?: '';
 
     $subject = $pumpStatus === 'ON'
         ? '⚠️ Plant Alert: Soil is Dry — Pump Turned ON'
         : '✅ Plant Alert: Soil is Wet — Pump Turned OFF';
 
-    $body = "=============================\n"
-          . "  PLANT MONITORING SYSTEM\n"
-          . "=============================\n\n"
-          . "Soil Status  : " . $soilStatus . "\n"
-          . "Soil Moisture: " . $moistureFormatted . "%\n"
-          . "Pump Status  : " . $pumpStatus . "\n"
-          . "Date & Time  : " . $timestamp . "\n\n"
-          . "=============================\n"
-          . "Automatic Plant Watering System\n"
-          . "This is an automated alert.\n";
+    $soilStatus        = $pumpStatus === 'ON' ? 'Dry' : 'Wet';
+    $moistureFormatted = number_format($moisturePercent, 1);
 
-    $mail = new PHPMailer(true);
+    $textBody = "=============================\n"
+              . "  PLANT MONITORING SYSTEM\n"
+              . "=============================\n\n"
+              . "Soil Status  : " . $soilStatus . "\n"
+              . "Soil Moisture: " . $moistureFormatted . "%\n"
+              . "Pump Status  : " . $pumpStatus . "\n"
+              . "Date & Time  : " . $timestamp . "\n\n"
+              . "=============================\n"
+              . "Automatic Plant Watering System\n"
+              . "This is an automated alert.\n";
 
-    try {
-        // Server settings
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $senderEmail;
-        $mail->Password   = $senderPassword;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port       = 465;
+    $data = json_encode([
+        'sender'      => ['email' => $senderEmail, 'name' => 'Plant Monitor'],
+        'to'          => [['email' => $recipientEmail, 'name' => 'Plant Owner']],
+        'subject'     => $subject,
+        'textContent' => $textBody
+    ]);
 
-        // Recipients
-        $mail->setFrom($senderEmail, 'Plant Monitor');
-        $mail->addAddress($recipientEmail, 'Plant Owner');
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'api-key: ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
 
-        // Content
-        $mail->isHTML(false);
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-        $mail->send();
-        return true;
-
-    } catch (Exception $e) {
-        error_log("Mailer Error: " . $mail->ErrorInfo);
-        return false;
-    }
+    return $httpCode === 201;
 }
