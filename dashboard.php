@@ -20,7 +20,7 @@ $readings = array_reverse($readings);
 $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,18 +29,73 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: #0d1f0f; color: #f0fdf4; min-height: 100vh; }
+
+        [data-theme="dark"] {
+            --bg: #0d1f0f;
+            --bg2: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --border-green: rgba(34,197,94,0.15);
+            --text: #f0fdf4;
+            --text-muted: rgba(255,255,255,0.4);
+            --text-dim: rgba(255,255,255,0.3);
+            --sidebar-bg: rgba(255,255,255,0.03);
+            --card-hover: rgba(74,222,128,0.3);
+            --nav-active-bg: rgba(74,222,128,0.1);
+            --nav-active-color: #4ade80;
+            --user-badge-bg: rgba(255,255,255,0.05);
+            --logout-color: rgba(239,68,68,0.7);
+            --logout-hover-bg: rgba(239,68,68,0.1);
+            --logout-hover-color: #f87171;
+            --table-border: rgba(255,255,255,0.06);
+            --table-row-border: rgba(255,255,255,0.04);
+            --toggle-bg: rgba(255,255,255,0.08);
+            --toggle-hover: rgba(255,255,255,0.15);
+            --no-data: rgba(255,255,255,0.3);
+        }
+
+        [data-theme="light"] {
+            --bg: #f0fdf4;
+            --bg2: rgba(0,0,0,0.03);
+            --border: rgba(0,0,0,0.08);
+            --border-green: rgba(22,163,74,0.2);
+            --text: #052e16;
+            --text-muted: rgba(0,0,0,0.5);
+            --text-dim: rgba(0,0,0,0.35);
+            --sidebar-bg: rgba(255,255,255,0.8);
+            --card-hover: rgba(22,163,74,0.4);
+            --nav-active-bg: rgba(22,163,74,0.1);
+            --nav-active-color: #16a34a;
+            --user-badge-bg: rgba(0,0,0,0.04);
+            --logout-color: rgba(220,38,38,0.7);
+            --logout-hover-bg: rgba(220,38,38,0.08);
+            --logout-hover-color: #dc2626;
+            --table-border: rgba(0,0,0,0.08);
+            --table-row-border: rgba(0,0,0,0.04);
+            --toggle-bg: rgba(0,0,0,0.06);
+            --toggle-hover: rgba(0,0,0,0.12);
+            --no-data: rgba(0,0,0,0.35);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
 
         .sidebar {
             position: fixed;
             top: 0; left: 0; bottom: 0;
             width: 240px;
-            background: rgba(255,255,255,0.03);
-            border-right: 1px solid rgba(34,197,94,0.15);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-green);
             padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
             z-index: 10;
+            backdrop-filter: blur(10px);
+            transition: background 0.3s, border-color 0.3s;
         }
         .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; }
         .sidebar-logo .icon {
@@ -50,33 +105,67 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
         }
-        .sidebar-logo span { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #f0fdf4; }
+        .sidebar-logo span { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text); }
         .nav-item {
             display: flex; align-items: center; gap: 0.75rem;
             padding: 0.7rem 1rem; border-radius: 8px;
-            color: rgba(255,255,255,0.5); text-decoration: none;
+            color: var(--text-muted); text-decoration: none;
             font-size: 0.9rem; transition: all 0.2s; margin-bottom: 0.25rem;
         }
-        .nav-item.active, .nav-item:hover { background: rgba(74,222,128,0.1); color: #4ade80; }
+        .nav-item.active, .nav-item:hover {
+            background: var(--nav-active-bg);
+            color: var(--nav-active-color);
+        }
         .sidebar-bottom { margin-top: auto; }
         .user-badge {
-            background: rgba(255,255,255,0.05);
+            background: var(--user-badge-bg);
             border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.75rem;
+            transition: background 0.3s;
         }
-        .user-badge .name { font-size: 0.85rem; font-weight: 500; color: #f0fdf4; }
-        .user-badge .role { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+        .user-badge .name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+        .user-badge .role { font-size: 0.75rem; color: var(--text-muted); }
         .logout-btn {
             display: flex; align-items: center; gap: 0.5rem;
-            color: rgba(239,68,68,0.7); text-decoration: none;
+            color: var(--logout-color); text-decoration: none;
             font-size: 0.85rem; padding: 0.5rem 1rem;
             border-radius: 8px; transition: all 0.2s;
         }
-        .logout-btn:hover { background: rgba(239,68,68,0.1); color: #f87171; }
+        .logout-btn:hover { background: var(--logout-hover-bg); color: var(--logout-hover-color); }
 
         .main { margin-left: 240px; padding: 2.5rem; }
         .page-header { margin-bottom: 2rem; }
-        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #f0fdf4; }
-        .page-header p { color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-top: 0.25rem; }
+        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); }
+        .page-header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
+
+        .header-right { display: flex; align-items: center; gap: 1rem; }
+
+        .theme-toggle {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.35rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .theme-toggle:hover { background: var(--toggle-hover); color: var(--text); }
+
+        .live-indicator {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.78rem; color: var(--text-dim);
+        }
+        .live-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4ade80; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .last-updated {
+            font-size: 0.75rem; color: var(--text-dim); margin-top: 0.4rem;
+        }
 
         .status-badge {
             display: inline-flex; align-items: center; gap: 0.4rem;
@@ -84,7 +173,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             font-size: 0.8rem; font-weight: 500;
         }
         .status-badge.on { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-        .status-badge.off { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+        .status-badge.off { background: var(--bg2); color: var(--text-muted); border: 1px solid var(--border); }
         .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
         .cards-grid {
@@ -93,30 +182,31 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             gap: 1.25rem; margin-bottom: 2rem;
         }
         .card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--bg2);
+            border: 1px solid var(--border);
             border-radius: 16px; padding: 1.5rem;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background 0.3s;
         }
-        .card:hover { border-color: rgba(74,222,128,0.3); }
+        .card:hover { border-color: var(--card-hover); }
         .card-label {
             font-size: 0.75rem; text-transform: uppercase;
-            letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 0.75rem;
+            letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.75rem;
         }
-        .card-value { font-size: 2.2rem; font-weight: 600; color: #f0fdf4; line-height: 1; }
+        .card-value { font-size: 2.2rem; font-weight: 600; color: var(--text); line-height: 1; }
         .card-value.green { color: #4ade80; }
         .card-value.blue { color: #60a5fa; }
-        .card-sub { font-size: 0.8rem; color: rgba(255,255,255,0.3); margin-top: 0.4rem; }
+        .card-sub { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem; }
         .card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
 
         .chart-section, .table-section {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--bg2);
+            border: 1px solid var(--border);
             border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;
+            transition: background 0.3s, border-color 0.3s;
         }
         .chart-section h2, .table-section h2 {
             font-size: 1rem; font-weight: 500;
-            margin-bottom: 1.25rem; color: rgba(255,255,255,0.7);
+            margin-bottom: 1.25rem; color: var(--text-muted);
         }
         .chart-section canvas { max-height: 220px; }
 
@@ -124,21 +214,17 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         th {
             text-align: left; font-size: 0.75rem;
             text-transform: uppercase; letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.3); padding: 0.5rem 0.75rem;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: var(--text-dim); padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--table-border);
         }
         td {
             padding: 0.75rem; font-size: 0.875rem;
-            color: rgba(255,255,255,0.7);
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--table-row-border);
         }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { color: #f0fdf4; }
-        .no-data { text-align: center; padding: 3rem; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
-
-        .refresh-indicator { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: rgba(255,255,255,0.3); }
-        .refresh-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        tr:hover td { color: var(--text); }
+        .no-data { text-align: center; padding: 3rem; color: var(--no-data); font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -165,10 +251,17 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                 <div>
                     <h1>Dashboard</h1>
                     <p>Live plant monitoring & watering status</p>
+                    <div class="last-updated">Last updated: <span id="lastUpdatedTime">--</span></div>
                 </div>
-                <div class="refresh-indicator">
-                    <div class="refresh-dot"></div>
-                    Auto-refresh every 10s
+                <div class="header-right">
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        Live
+                    </div>
+                    <div class="theme-toggle" onclick="toggleTheme()">
+                        <span id="themeIcon">🌙</span>
+                        <span id="themeLabel">Dark</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,16 +270,16 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             <div class="card">
                 <div class="card-icon">💧</div>
                 <div class="card-label">Soil Moisture</div>
-                <div class="card-value green">
+                <div class="card-value green" id="moisturePercent">
                     <?= $latest ? round($latest['moisture_percent'], 1) . '%' : '--' ?>
                 </div>
-                <div class="card-sub">Raw: <?= $latest ? $latest['soil_moisture'] : '--' ?></div>
+                <div class="card-sub">Raw: <span id="moistureRaw"><?= $latest ? $latest['soil_moisture'] : '--' ?></span></div>
             </div>
 
             <div class="card">
                 <div class="card-icon">⚡</div>
                 <div class="card-label">Pump Status</div>
-                <div style="margin-top: 0.5rem;">
+                <div style="margin-top: 0.5rem;" id="pumpStatusContainer">
                     <?php if ($latest): ?>
                         <span class="status-badge <?= strtolower($latest['pump_status']) === 'on' ? 'on' : 'off' ?>">
                             <span class="dot"></span>
@@ -199,35 +292,20 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                 <div class="card-sub">Water pump state</div>
             </div>
 
-            <?php if ($latest && $latest['temperature'] !== null): ?>
-            <div class="card">
-                <div class="card-icon">🌡️</div>
-                <div class="card-label">Temperature</div>
-                <div class="card-value blue"><?= $latest['temperature'] ?>°C</div>
-                <div class="card-sub">Ambient temp</div>
-            </div>
-            <div class="card">
-                <div class="card-icon">💦</div>
-                <div class="card-label">Humidity</div>
-                <div class="card-value blue"><?= $latest['humidity'] ?>%</div>
-                <div class="card-sub">Relative humidity</div>
-            </div>
-            <?php endif; ?>
-
             <div class="card">
                 <div class="card-icon">📈</div>
                 <div class="card-label">Total Readings</div>
-                <div class="card-value"><?= number_format($totalCount) ?></div>
+                <div class="card-value" id="totalCount"><?= number_format($totalCount) ?></div>
                 <div class="card-sub">All time records</div>
             </div>
 
             <div class="card">
                 <div class="card-icon">🕐</div>
                 <div class="card-label">Last Update</div>
-                <div class="card-value" style="font-size: 1rem; margin-top:0.4rem;">
+                <div class="card-value" style="font-size: 1rem; margin-top:0.4rem;" id="lastTime">
                     <?= $latest ? date('h:i:s A', strtotime($latest['recorded_at'])) : '--' ?>
                 </div>
-                <div class="card-sub">
+                <div class="card-sub" id="lastDate">
                     <?= $latest ? date('M d, Y', strtotime($latest['recorded_at'])) : 'No data yet' ?>
                 </div>
             </div>
@@ -235,16 +313,16 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
 
         <div class="chart-section">
             <h2>📉 Moisture History (Last 20 Readings)</h2>
-            <?php if (count($readings) > 0): ?>
-                <canvas id="moistureChart"></canvas>
-            <?php else: ?>
-                <div class="no-data">No readings yet. Waiting for ESP8266 data...</div>
-            <?php endif; ?>
+            <canvas id="moistureChart" <?= count($readings) === 0 ? 'style="display:none"' : '' ?>></canvas>
+            <div class="no-data" id="chartNoData" <?= count($readings) > 0 ? 'style="display:none"' : '' ?>>
+                No readings yet. Waiting for ESP8266 data...
+            </div>
         </div>
 
         <div class="table-section">
             <h2>📋 Recent Readings</h2>
-            <?php if (count($readings) > 0): ?>
+            <div id="tableContainer">
+                <?php if (count($readings) > 0): ?>
                 <table>
                     <thead>
                         <tr>
@@ -254,7 +332,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                             <th>Pump</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tableBody">
                         <?php foreach (array_reverse($readings) as $r): ?>
                         <tr>
                             <td><?= date('M d, h:i:s A', strtotime($r['recorded_at'])) ?></td>
@@ -270,27 +348,56 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php else: ?>
+                <?php else: ?>
                 <div class="no-data">No data yet. Connect your ESP8266 to start seeing readings.</div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </main>
 
-    <?php if (count($readings) > 0): ?>
     <script>
-        const labels = <?= json_encode(array_map(fn($r) => date('H:i:s', strtotime($r['recorded_at'])), $readings)) ?>;
-        const moistureData = <?= json_encode(array_map(fn($r) => round($r['moisture_percent'], 1), $readings)) ?>;
-        const pumpData = <?= json_encode(array_map(fn($r) => strtolower($r['pump_status']) === 'on' ? 100 : 0, $readings)) ?>;
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeLabel').textContent = newTheme === 'dark' ? 'Dark' : 'Light';
+            updateChartColors();
+        }
+
+        // Load saved theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+
+        // ===== CHART =====
+        const initialLabels = <?= json_encode(array_map(fn($r) => date('H:i:s', strtotime($r['recorded_at'])), $readings)) ?>;
+        const initialMoisture = <?= json_encode(array_map(fn($r) => round($r['moisture_percent'], 1), $readings)) ?>;
+        const initialPump = <?= json_encode(array_map(fn($r) => strtolower($r['pump_status']) === 'on' ? 100 : 0, $readings)) ?>;
+
+        function getTickColor() {
+            return document.documentElement.getAttribute('data-theme') === 'dark'
+                ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.4)';
+        }
+
+        function getGridColor() {
+            return document.documentElement.getAttribute('data-theme') === 'dark'
+                ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)';
+        }
 
         const ctx = document.getElementById('moistureChart').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels,
+                labels: initialLabels,
                 datasets: [
                     {
                         label: 'Moisture %',
-                        data: moistureData,
+                        data: initialMoisture,
                         borderColor: '#4ade80',
                         backgroundColor: 'rgba(74,222,128,0.08)',
                         borderWidth: 2,
@@ -301,7 +408,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                     },
                     {
                         label: 'Pump ON/OFF',
-                        data: pumpData,
+                        data: initialPump,
                         borderColor: 'rgba(96,165,250,0.6)',
                         backgroundColor: 'rgba(96,165,250,0.05)',
                         borderWidth: 1.5,
@@ -314,27 +421,103 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             },
             options: {
                 responsive: true,
+                animation: { duration: 500 },
                 plugins: {
-                    legend: { labels: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } } }
+                    legend: { labels: { color: getTickColor(), font: { size: 11 } } }
                 },
                 scales: {
                     x: {
-                        ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 } },
-                        grid: { color: 'rgba(255,255,255,0.04)' }
+                        ticks: { color: getTickColor(), font: { size: 10 } },
+                        grid: { color: getGridColor() }
                     },
                     y: {
                         min: 0, max: 100,
-                        ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 } },
-                        grid: { color: 'rgba(255,255,255,0.04)' }
+                        ticks: { color: getTickColor(), font: { size: 10 } },
+                        grid: { color: getGridColor() }
                     }
                 }
             }
         });
 
-        setTimeout(() => location.reload(), 10000);
+        function updateChartColors() {
+            chart.options.scales.x.ticks.color = getTickColor();
+            chart.options.scales.y.ticks.color = getTickColor();
+            chart.options.scales.x.grid.color = getGridColor();
+            chart.options.scales.y.grid.color = getGridColor();
+            chart.options.plugins.legend.labels.color = getTickColor();
+            chart.update();
+        }
+
+        // ===== LIVE DATA FETCH (no page reload) =====
+        function fetchLatestData() {
+            fetch('fetch_data.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.latest) return;
+
+                    const l = data.latest;
+
+                    // Update cards
+                    document.getElementById('moisturePercent').textContent = parseFloat(l.moisture_percent).toFixed(1) + '%';
+                    document.getElementById('moistureRaw').textContent = l.soil_moisture;
+                    document.getElementById('totalCount').textContent = parseInt(data.total).toLocaleString();
+                    document.getElementById('lastTime').textContent = l.time;
+                    document.getElementById('lastDate').textContent = l.date;
+                    document.getElementById('lastUpdatedTime').textContent = new Date().toLocaleTimeString();
+
+                    // Update pump badge
+                    const isOn = l.pump_status.toLowerCase() === 'on';
+                    document.getElementById('pumpStatusContainer').innerHTML = `
+                        <span class="status-badge ${isOn ? 'on' : 'off'}">
+                            <span class="dot"></span>
+                            ${l.pump_status}
+                        </span>`;
+
+                    // Update chart
+                    if (data.readings && data.readings.length > 0) {
+                        document.getElementById('moistureChart').style.display = 'block';
+                        document.getElementById('chartNoData').style.display = 'none';
+                        chart.data.labels = data.readings.map(r => r.time_short);
+                        chart.data.datasets[0].data = data.readings.map(r => parseFloat(r.moisture_percent).toFixed(1));
+                        chart.data.datasets[1].data = data.readings.map(r => r.pump_status.toLowerCase() === 'on' ? 100 : 0);
+                        chart.update('none');
+                    }
+
+                    // Update table
+                    if (data.readings && data.readings.length > 0) {
+                        const rows = [...data.readings].reverse().map(r => `
+                            <tr>
+                                <td>${r.recorded_at_formatted}</td>
+                                <td>${parseFloat(r.moisture_percent).toFixed(1)}%</td>
+                                <td>${r.soil_moisture}</td>
+                                <td>
+                                    <span class="status-badge ${r.pump_status.toLowerCase() === 'on' ? 'on' : 'off'}">
+                                        <span class="dot"></span>
+                                        ${r.pump_status}
+                                    </span>
+                                </td>
+                            </tr>`).join('');
+
+                        document.getElementById('tableContainer').innerHTML = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Moisture %</th>
+                                        <th>Raw Value</th>
+                                        <th>Pump</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>`;
+                    }
+                })
+                .catch(err => console.log('Fetch error:', err));
+        }
+
+        // Fetch every 5 seconds — no page reload
+        setInterval(fetchLatestData, 5000);
+        document.getElementById('lastUpdatedTime').textContent = new Date().toLocaleTimeString();
     </script>
-    <?php else: ?>
-    <script>setTimeout(() => location.reload(), 10000);</script>
-    <?php endif; ?>
 </body>
 </html>
