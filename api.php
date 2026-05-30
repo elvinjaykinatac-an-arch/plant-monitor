@@ -43,6 +43,7 @@ $previousStatus = isset($prev[1]) ? strtoupper(trim($prev[1]['pump_status'])) : 
 // Only send email when pump status CHANGES
 $emailSent = false;
 if ($currentStatus !== $previousStatus) {
+    date_default_timezone_set('Asia/Manila');
     $timestamp = date('m-d-Y h:i A');
     $emailSent = sendEmailAlert($currentStatus, $moisturePercent, $timestamp);
 }
