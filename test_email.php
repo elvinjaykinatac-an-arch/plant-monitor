@@ -8,7 +8,7 @@ $timestamp = date('m-d-Y h:i A');
 $result = sendEmailAlert('ON', 25.5, $timestamp);
 
 if ($result) {
-    echo "✅ Email sent successfully!";
+    echo "✅ Email sent successfully! Check your inbox.";
 } else {
-    echo "❌ Email failed to send. Check your Gmail credentials.";
+    echo "❌ Email failed. Check Railway logs.";
 }
