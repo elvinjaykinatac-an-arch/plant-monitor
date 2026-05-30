@@ -22,36 +22,29 @@ function sendEmailAlert($pumpStatus, $moisturePercent, $timestamp) {
           . "Automatic Plant Watering System\r\n"
           . "This is an automated alert.\r\n";
 
-    return sendViaSMTP($senderEmail, $senderPassword, $recipientEmail, $subject, $body);
+    return sendViaSSL($senderEmail, $senderPassword, $recipientEmail, $subject, $body);
 }
 
-function sendViaSMTP($from, $password, $to, $subject, $body) {
-    $smtpHost = 'smtp.gmail.com';
-    $smtpPort = 587;
+function sendViaSSL($from, $password, $to, $subject, $body) {
+    $smtpHost = 'ssl://smtp.gmail.com';
+    $smtpPort = 465;
 
-    $socket = fsockopen($smtpHost, $smtpPort, $errno, $errstr, 10);
+    $socket = fsockopen($smtpHost, $smtpPort, $errno, $errstr, 15);
     if (!$socket) {
-        error_log("SMTP Error: Could not connect - $errstr");
+        error_log("SMTP SSL Error: $errstr ($errno)");
         return false;
     }
 
+    // Read greeting
     fgets($socket, 1024);
 
+    // Say hello
     fputs($socket, "EHLO plant-monitor\r\n");
     while ($line = fgets($socket, 1024)) {
         if (substr($line, 3, 1) === ' ') break;
     }
 
-    fputs($socket, "STARTTLS\r\n");
-    fgets($socket, 1024);
-
-    stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-
-    fputs($socket, "EHLO plant-monitor\r\n");
-    while ($line = fgets($socket, 1024)) {
-        if (substr($line, 3, 1) === ' ') break;
-    }
-
+    // Login
     fputs($socket, "AUTH LOGIN\r\n");
     fgets($socket, 1024);
 
@@ -67,12 +60,14 @@ function sendViaSMTP($from, $password, $to, $subject, $body) {
         return false;
     }
 
+    // Set sender and recipient
     fputs($socket, "MAIL FROM:<{$from}>\r\n");
     fgets($socket, 1024);
 
     fputs($socket, "RCPT TO:<{$to}>\r\n");
     fgets($socket, 1024);
 
+    // Send data
     fputs($socket, "DATA\r\n");
     fgets($socket, 1024);
 
