@@ -53,8 +53,6 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             --no-data: rgba(255,255,255,0.3);
             --faq-q-bg: rgba(74,222,128,0.08);
             --faq-q-border: rgba(74,222,128,0.2);
-            --input-bg: rgba(255,255,255,0.06);
-            --input-border: rgba(255,255,255,0.1);
         }
 
         [data-theme="light"] {
@@ -65,7 +63,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             --text: #052e16;
             --text-muted: rgba(0,0,0,0.5);
             --text-dim: rgba(0,0,0,0.35);
-            --sidebar-bg: rgba(255,255,255,0.9);
+            --sidebar-bg: rgba(255,255,255,0.8);
             --card-hover: rgba(22,163,74,0.4);
             --nav-active-bg: rgba(22,163,74,0.1);
             --nav-active-color: #16a34a;
@@ -80,8 +78,6 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             --no-data: rgba(0,0,0,0.35);
             --faq-q-bg: rgba(22,163,74,0.06);
             --faq-q-border: rgba(22,163,74,0.2);
-            --input-bg: rgba(0,0,0,0.04);
-            --input-border: rgba(0,0,0,0.15);
         }
 
         body {
@@ -92,15 +88,17 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             transition: background 0.3s, color 0.3s;
         }
 
-        /* SIDEBAR */
         .sidebar {
             position: fixed;
-            top: 0; left: 0; bottom: 0; width: 240px;
+            top: 0; left: 0; bottom: 0;
+            width: 240px;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border-green);
             padding: 2rem 1.5rem;
-            display: flex; flex-direction: column;
-            z-index: 10; backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            backdrop-filter: blur(10px);
             transition: background 0.3s, border-color 0.3s;
         }
         .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; }
@@ -117,14 +115,12 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             padding: 0.7rem 1rem; border-radius: 8px;
             color: var(--text-muted); text-decoration: none;
             font-size: 0.9rem; transition: all 0.2s; margin-bottom: 0.25rem;
-            cursor: pointer;
         }
         .nav-item.active, .nav-item:hover { background: var(--nav-active-bg); color: var(--nav-active-color); }
         .sidebar-bottom { margin-top: auto; }
         .user-badge {
             background: var(--user-badge-bg);
             border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.75rem;
-            transition: background 0.3s;
         }
         .user-badge .name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
         .user-badge .role { font-size: 0.75rem; color: var(--text-muted); }
@@ -136,16 +132,12 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         }
         .logout-btn:hover { background: var(--logout-hover-bg); color: var(--logout-hover-color); }
 
-        /* MAIN */
         .main { margin-left: 240px; padding: 2.5rem; }
         .page-header { margin-bottom: 2rem; }
         .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text); }
         .page-header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-        .last-updated { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.4rem; }
 
         .header-right { display: flex; align-items: center; gap: 1rem; }
-
-        /* THEME TOGGLE */
         .theme-toggle {
             display: flex; align-items: center; gap: 0.5rem;
             background: var(--toggle-bg); border: 1px solid var(--border);
@@ -158,8 +150,8 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         .live-indicator { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--text-dim); }
         .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .last-updated { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.4rem; }
 
-        /* STATUS BADGE */
         .status-badge {
             display: inline-flex; align-items: center; gap: 0.4rem;
             padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 500;
@@ -168,7 +160,6 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         .status-badge.off { background: var(--bg2); color: var(--text-muted); border: 1px solid var(--border); }
         .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-        /* CARDS */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -176,8 +167,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         }
         .card {
             background: var(--bg2); border: 1px solid var(--border);
-            border-radius: 16px; padding: 1.5rem;
-            transition: border-color 0.2s, background 0.3s;
+            border-radius: 16px; padding: 1.5rem; transition: border-color 0.2s, background 0.3s;
         }
         .card:hover { border-color: var(--card-hover); }
         .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.75rem; }
@@ -186,18 +176,16 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         .card-sub { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem; }
         .card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
 
-        /* SECTIONS */
-        .chart-section, .table-section, .faq-section, .history-section {
+        .chart-section, .table-section, .faq-section {
             background: var(--bg2); border: 1px solid var(--border);
             border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;
             transition: background 0.3s, border-color 0.3s;
         }
-        .chart-section h2, .table-section h2, .faq-section h2, .history-section h2 {
+        .chart-section h2, .table-section h2, .faq-section h2 {
             font-size: 1rem; font-weight: 500; margin-bottom: 1.25rem; color: var(--text-muted);
         }
         .chart-section canvas { max-height: 220px; }
 
-        /* TABLE */
         table { width: 100%; border-collapse: collapse; }
         th {
             text-align: left; font-size: 0.75rem; text-transform: uppercase;
@@ -209,80 +197,58 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         tr:hover td { color: var(--text); }
         .no-data { text-align: center; padding: 3rem; color: var(--no-data); font-size: 0.9rem; }
 
-        /* DATE FILTER */
-        .filter-bar {
-            display: flex; align-items: center; gap: 0.75rem;
-            flex-wrap: wrap; margin-bottom: 1.25rem;
-            padding: 1rem 1.25rem;
-            background: var(--bg2); border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-        .filter-bar label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
-        .filter-bar input[type="date"] {
-            padding: 0.5rem 0.75rem;
-            background: var(--input-bg); border: 1px solid var(--input-border);
-            border-radius: 8px; color: var(--text);
-            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
-            outline: none; transition: border-color 0.2s; cursor: pointer;
-        }
-        .filter-bar input[type="date"]:focus { border-color: #4ade80; }
-        .btn-filter {
-            padding: 0.5rem 1.25rem;
-            background: #16a34a; border: none; border-radius: 8px;
-            color: white; font-family: 'DM Sans', sans-serif;
-            font-size: 0.875rem; font-weight: 500; cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s; white-space: nowrap;
-        }
-        .btn-filter:hover { opacity: 0.85; transform: translateY(-1px); }
-        .btn-clear {
-            padding: 0.5rem 1rem;
-            background: var(--toggle-bg); border: 1px solid var(--border);
-            border-radius: 8px; color: var(--text-muted);
-            font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
-            cursor: pointer; transition: all 0.2s; white-space: nowrap;
-        }
-        .btn-clear:hover { background: var(--toggle-hover); color: var(--text); }
-        .filter-result-badge {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.25rem 0.75rem;
-            background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2);
-            border-radius: 20px; font-size: 0.78rem; color: #4ade80;
-            margin-left: auto;
-        }
-
-        /* FAQ */
+        /* ===== FAQ STYLES ===== */
         .faq-item {
-            border: 1px solid var(--border); border-radius: 12px;
-            margin-bottom: 0.75rem; overflow: hidden; transition: border-color 0.2s;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
         }
         .faq-item:hover { border-color: var(--faq-q-border); }
+
         .faq-question {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 1.25rem; cursor: pointer;
-            background: var(--faq-q-bg); transition: background 0.2s; gap: 1rem;
-            border: none; width: 100%; text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            background: var(--faq-q-bg);
+            transition: background 0.2s;
+            gap: 1rem;
         }
         .faq-question:hover { background: var(--nav-active-bg); }
-        .faq-question-text { font-size: 0.9rem; font-weight: 500; color: var(--text); line-height: 1.4; }
-        .faq-icon { font-size: 1.2rem; color: var(--nav-active-color); transition: transform 0.3s; flex-shrink: 0; font-weight: bold; }
-        .faq-answer {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
-            padding: 0 1.25rem; border-top: 0px solid var(--border);
+
+        .faq-question span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.4;
         }
-        .faq-item.open .faq-answer {
-            max-height: 300px; padding: 1rem 1.25rem;
+
+        .faq-icon {
+            font-size: 1.1rem;
+            color: var(--nav-active-color);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 1rem 1.25rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
             border-top: 1px solid var(--border);
         }
+
+        .faq-item.open .faq-answer { display: block; }
         .faq-item.open .faq-icon { transform: rotate(45deg); }
         .faq-item.open .faq-question { background: var(--nav-active-bg); }
-        .faq-item.open .faq-question-text { color: var(--nav-active-color); }
+        .faq-item.open .faq-question span { color: var(--nav-active-color); }
     </style>
 </head>
 <body>
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <div class="icon">🌿</div>
@@ -290,8 +256,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         </div>
         <nav>
             <a href="dashboard.php" class="nav-item active">📊 Dashboard</a>
-            <a class="nav-item" onclick="scrollTo('history')">📅 History</a>
-            <a class="nav-item" onclick="scrollTo('faq')">❓ FAQ</a>
+            <a href="#faq" class="nav-item" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'}); return false;">❓ FAQ</a>
         </nav>
         <div class="sidebar-bottom">
             <div class="user-badge">
@@ -302,10 +267,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
-
-        <!-- HEADER -->
         <div class="page-header">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                 <div>
@@ -381,14 +343,19 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             </div>
         </div>
 
-        <!-- RECENT TABLE -->
+        <!-- TABLE -->
         <div class="table-section">
-            <h2>📋 Recent Readings (Last 20)</h2>
+            <h2>📋 Recent Readings</h2>
             <div id="tableContainer">
                 <?php if (count($readings) > 0): ?>
                 <table>
                     <thead>
-                        <tr><th>Time</th><th>Moisture %</th><th>Raw Value</th><th>Pump</th></tr>
+                        <tr>
+                            <th>Time</th>
+                            <th>Moisture %</th>
+                            <th>Raw Value</th>
+                            <th>Pump</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <?php foreach (array_reverse($readings) as $r): ?>
@@ -412,136 +379,107 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             </div>
         </div>
 
-        <!-- HISTORICAL DATA -->
-        <div class="history-section" id="history">
-            <h2>📅 Historical Data</h2>
-            <div class="filter-bar">
-                <label>From</label>
-                <input type="date" id="startDate">
-                <label>To</label>
-                <input type="date" id="endDate">
-                <button class="btn-filter" onclick="applyFilter()">🔍 Search</button>
-                <button class="btn-clear" onclick="clearFilter()">✕ Clear</button>
-                <div class="filter-result-badge" id="filterBadge" style="display:none;">
-                    <span id="filterCount">0</span> records found
-                </div>
-            </div>
-            <div id="historyTableContainer">
-                <div class="no-data">Select a date range and click Search to view historical data.</div>
-            </div>
-        </div>
-
-        <!-- FAQ -->
+        <!-- FAQ SECTION -->
         <div class="faq-section" id="faq">
             <h2>❓ Frequently Asked Questions</h2>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">Can I use the system without internet?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I use the system without internet?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     No. The system requires an internet connection to send data to the Railway cloud database and to access the web dashboard. However, the ESP8266 will still control the pump locally based on soil moisture even without internet.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">Can I use a mobile hotspot instead of WiFi?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I use a mobile hotspot instead of WiFi?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     Yes! You can use a mobile hotspot. Just make sure it is set to 2.4GHz band. The ESP8266 does NOT support 5GHz networks. The phone must have mobile data for the ESP8266 to reach the Railway server.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">How many email alerts will I receive?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How many email alerts will I receive?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     Only 2 emails per watering cycle — one when the pump turns ON (soil is dry) and one when the pump turns OFF (soil is wet). The system will NOT spam your inbox with repeated emails for the same status.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">Can I access the dashboard on my phone?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I access the dashboard on my phone?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     Yes! The dashboard is accessible on any device with a web browser — computer, smartphone, or tablet. Just open the browser and go to the system URL.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">Can I change the email recipient?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I change the email recipient?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     Yes. The recipient email can be changed anytime in the Railway environment variables (ALERT_EMAIL) without changing any code. This is useful when handing over the system to the client.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">What happens if the WiFi disconnects?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What happens if the WiFi disconnects?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     The ESP8266 will automatically attempt to reconnect to WiFi. The pump will still function based on the soil moisture sensor readings. Data will resume sending to the database once WiFi is restored.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">How often does the sensor read and send data?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How often does the sensor read and send data?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     The sensor reads and sends data every 5 seconds. The dashboard also auto-updates every 5 seconds without needing to refresh the page manually.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">What does the Dark/Light mode toggle do?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What does the Dark/Light mode toggle do?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
-                    The 🌙 Dark / ☀️ Light toggle switches the dashboard between dark and light mode. Your preference is saved automatically and remembered even after closing the browser.
+                    The 🌙 Dark / ☀️ Light toggle switches the dashboard appearance between dark and light mode. Your preference is saved automatically and will be remembered even after closing the browser.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">What is the default login credentials?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What is the default login credentials?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     The default username is <strong>admin</strong> and the default password is <strong>admin2026</strong>. It is recommended to change the password after the first login for security.
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">Why is the dashboard showing "--" for all values?</span>
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Why is the dashboard showing "--" for all values?</span>
                     <span class="faq-icon">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     This means the ESP8266 has not sent any data yet. Make sure the NodeMCU is powered on, connected to WiFi, and the Arduino code is running. Check the Serial Monitor for any error messages.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-question-text">How do I use the Historical Data filter?</span>
-                    <span class="faq-icon">+</span>
-                </button>
-                <div class="faq-answer">
-                    Scroll down to the "📅 Historical Data" section. Select a Start Date and End Date, then click 🔍 Search. All readings within that date range will be shown. Click ✕ Clear to reset the filter.
                 </div>
             </div>
 
@@ -549,12 +487,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
     </main>
 
     <script>
-        // ===== SCROLL =====
-        function scrollTo(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // ===== THEME =====
+        // ===== THEME TOGGLE =====
         function toggleTheme() {
             const html = document.documentElement;
             const isDark = html.getAttribute('data-theme') === 'dark';
@@ -571,75 +504,14 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
         document.getElementById('themeIcon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
         document.getElementById('themeLabel').textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
 
-        // ===== FAQ =====
-        function toggleFaq(btn) {
-            const item = btn.parentElement;
+        // ===== FAQ TOGGLE =====
+        function toggleFaq(questionEl) {
+            const item = questionEl.parentElement;
             const isOpen = item.classList.contains('open');
+            // Close all
             document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            // Open clicked if it was closed
             if (!isOpen) item.classList.add('open');
-        }
-
-        // ===== DATE FILTER =====
-        const today = new Date();
-        const weekAgo = new Date();
-        weekAgo.setDate(today.getDate() - 7);
-        document.getElementById('endDate').value = today.toISOString().split('T')[0];
-        document.getElementById('startDate').value = weekAgo.toISOString().split('T')[0];
-
-        function applyFilter() {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
-
-            if (!start || !end) { alert('Please select both start and end dates.'); return; }
-            if (start > end) { alert('Start date cannot be later than end date.'); return; }
-
-            document.getElementById('historyTableContainer').innerHTML = '<div class="no-data">🔍 Loading...</div>';
-
-            fetch(fetch_data.php?start=${start}&end=${end})
-                .then(res => res.json())
-                .then(data => {
-                    const badge = document.getElementById('filterBadge');
-
-                    if (!data.readings || data.readings.length === 0) {
-                        document.getElementById('historyTableContainer').innerHTML =
-                            '<div class="no-data">No records found for the selected date range.</div>';
-                        badge.style.display = 'none';
-                        return;
-                    }
-
-                    badge.style.display = 'inline-flex';
-                    document.getElementById('filterCount').textContent = data.count;
-
-                    const rows = data.readings.map(r => `
-                        <tr>
-                            <td>${r.recorded_at_formatted}</td>
-                            <td>${parseFloat(r.moisture_percent).toFixed(1)}%</td>
-                            <td>${r.soil_moisture}</td>
-                            <td>
-                                <span class="status-badge ${r.pump_status.toLowerCase() === 'on' ? 'on' : 'off'}">
-                                    <span class="dot"></span>${r.pump_status}
-                                </span>
-                            </td>
-                        </tr>`).join('');
-
-                    document.getElementById('historyTableContainer').innerHTML = `
-                        <table>
-                            <thead><tr><th>Time</th><th>Moisture %</th><th>Raw Value</th><th>Pump</th></tr></thead>
-                            <tbody>${rows}</tbody>
-                        </table>`;
-                })
-                .catch(() => {
-                    document.getElementById('historyTableContainer').innerHTML =
-                        '<div class="no-data">Error loading data. Please try again.</div>';
-                });
-        }
-
-        function clearFilter() {
-            document.getElementById('startDate').value = weekAgo.toISOString().split('T')[0];
-            document.getElementById('endDate').value = today.toISOString().split('T')[0];
-            document.getElementById('historyTableContainer').innerHTML =
-                '<div class="no-data">Select a date range and click Search to view historical data.</div>';
-            document.getElementById('filterBadge').style.display = 'none';
         }
 
         // ===== CHART =====
@@ -667,16 +539,22 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                         data: initialMoisture,
                         borderColor: '#4ade80',
                         backgroundColor: 'rgba(74,222,128,0.08)',
-                        borderWidth: 2, fill: true, tension: 0.4,
-                        pointBackgroundColor: '#4ade80', pointRadius: 4
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4ade80',
+                        pointRadius: 4
                     },
                     {
                         label: 'Pump ON/OFF',
                         data: initialPump,
                         borderColor: 'rgba(96,165,250,0.6)',
                         backgroundColor: 'rgba(96,165,250,0.05)',
-                        borderWidth: 1.5, borderDash: [4, 4],
-                        fill: false, tension: 0, pointRadius: 0
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        fill: false,
+                        tension: 0,
+                        pointRadius: 0
                     }
                 ]
             },
@@ -687,8 +565,15 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                     legend: { labels: { color: getTickColor(), font: { size: 11 } } }
                 },
                 scales: {
-                    x: { ticks: { color: getTickColor(), font: { size: 10 } }, grid: { color: getGridColor() } },
-                    y: { min: 0, max: 100, ticks: { color: getTickColor(), font: { size: 10 } }, grid: { color: getGridColor() } }
+                    x: {
+                        ticks: { color: getTickColor(), font: { size: 10 } },
+                        grid: { color: getGridColor() }
+                    },
+                    y: {
+                        min: 0, max: 100,
+                        ticks: { color: getTickColor(), font: { size: 10 } },
+                        grid: { color: getGridColor() }
+                    }
                 }
             }
         });
@@ -702,7 +587,7 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
             chart.update();
         }
 
-        // ===== LIVE FETCH =====
+        // ===== LIVE DATA FETCH =====
         function fetchLatestData() {
             fetch('fetch_data.php')
                 .then(res => res.json())
@@ -720,7 +605,8 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                     const isOn = l.pump_status.toLowerCase() === 'on';
                     document.getElementById('pumpStatusContainer').innerHTML = `
                         <span class="status-badge ${isOn ? 'on' : 'off'}">
-                            <span class="dot"></span>${l.pump_status}
+                            <span class="dot"></span>
+                            ${l.pump_status}
                         </span>`;
 
                     if (data.readings && data.readings.length > 0) {
@@ -738,14 +624,22 @@ $totalCount = $db->query("SELECT COUNT(*) FROM sensor_readings")->fetchColumn();
                                 <td>${r.soil_moisture}</td>
                                 <td>
                                     <span class="status-badge ${r.pump_status.toLowerCase() === 'on' ? 'on' : 'off'}">
-                                        <span class="dot"></span>${r.pump_status}
+                                        <span class="dot"></span>
+                                        ${r.pump_status}
                                     </span>
                                 </td>
                             </tr>`).join('');
 
                         document.getElementById('tableContainer').innerHTML = `
                             <table>
-                                <thead><tr><th>Time</th><th>Moisture %</th><th>Raw Value</th><th>Pump</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Moisture %</th>
+                                        <th>Raw Value</th>
+                                        <th>Pump</th>
+                                    </tr>
+                                </thead>
                                 <tbody>${rows}</tbody>
                             </table>`;
                     }
